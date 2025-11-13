@@ -33,7 +33,7 @@ class ReviewService:
             return
         
         # Initialize Apify client
-        self.apify_token = os.getenv("APIFY_TOKEN") or os.getenv("APIFY_API_TOKEN")
+        self.apify_token = os.getenv("APIFY_TOKEN") 
         if not self.apify_token:
             raise ValidationError("APIFY_TOKEN environment variable is required. Please set it in your .env file.")
         
