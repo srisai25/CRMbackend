@@ -127,8 +127,8 @@ class GoogleOAuthService:
         username = base_username
         counter = 1
         
-        # Ensure username is unique
-        while self.db.query(User).filter(User.username == username).first():
+        # Ensure username is unique among active users
+        while self.db.query(User).filter(User.username == username, User.is_active == True).first():
             username = f"{base_username}{counter}"
             counter += 1
         

@@ -164,6 +164,7 @@ class UserService:
             user.is_active = False
             user.email = f"deleted_{user.id}@deleted.com"  # Prevent email conflicts
             user.username = f"deleted_{user.id}"  # Prevent username conflicts
+            user.google_id = None  # Clear Google ID to allow re-signup with same Google account
             
             self.db.commit()
             

@@ -103,7 +103,7 @@ class JWTHandler:
         return pwd_context.verify(plain_password, hashed_password)
     
     def get_user_by_email(self, email: str, db: Session) -> Optional[User]:
-        """Get user by email."""
+        """Get user by email (only active users)."""
         return db.query(User).filter(User.email == email, User.is_active == True).first()
     
     def get_user_by_id(self, user_id: str, db: Session) -> Optional[User]:
@@ -112,14 +112,24 @@ class JWTHandler:
     
     def create_user(self, email: str, username: str, password: str, db: Session) -> User:
         """Create a new user."""
-        # Check if user already exists
+        # Check if active user already exists
         if self.get_user_by_email(email, db):
             raise AuthenticationError("Email already registered")
         
-        if db.query(User).filter(User.username == username).first():
+        if db.query(User).filter(User.username == username, User.is_active == True).first():
             raise AuthenticationError("Username already taken")
         
-        # Create user
+        # Check if there's a deleted account that can be reactivated
+        # Look for inactive users with modified email patterns from deletion
+        deleted_user = db.query(User).filter(
+            User.email.like(f"deleted_%@deleted.com"),
+            User.is_active == False
+        ).first()
+        
+        # For now, just create a new user - reactivation can be added later if needed
+        # The main fix is ensuring username/email checks only look at active users
+        
+        # Create new user
         user = User(
             id=str(uuid.uuid4()),
             email=email,
