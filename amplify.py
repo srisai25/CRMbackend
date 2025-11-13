@@ -1,8 +1,8 @@
 # from apify_client import ApifyClient
 
 # # Initialize the ApifyClient with your Apify API token
-# # Replace '<YOUR_API_TOKEN>' with your token.
-# client = ApifyClient("apify_api_oLQF0YMZCa8CTOnL9Y40x6tIASOmu23AyZ5y")
+# # Replace '<YOUR_API_TOKEN>' with your token from environment variables.
+# client = ApifyClient(os.getenv("APIFY_TOKEN"))
 
 # # Prepare the Actor input
 # run_input = {
@@ -25,9 +25,14 @@ import os
 from apify_client import ApifyClient
 
 # -----------------------------
-# 🔐 1. SET YOUR API TOKEN HERE
+# 🔐 1. GET API TOKEN FROM ENVIRONMENT
 # -----------------------------
-APIFY_TOKEN = "apify_api_oLQF0YMZCa8CTOnL9Y40x6tIASOmu23AyZ5y"
+APIFY_TOKEN = os.getenv("APIFY_TOKEN")
+if not APIFY_TOKEN:
+    print("❌ Error: APIFY_TOKEN environment variable not set!")
+    print("Please set your Apify API token in the .env file:")
+    print("APIFY_TOKEN=your_apify_token_here")
+    exit(1)
 
 # -----------------------------
 # 🚀 2. INITIALIZE CLIENT
